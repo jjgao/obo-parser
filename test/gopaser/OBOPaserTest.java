@@ -46,8 +46,8 @@ public class OBOPaserTest {
         String strFile = "D:\\\\Google Drive\\\\Cytoscape 2013 Summer Program\\\\GO Database\\\\GO_Database_20130720\\\\goslim_generic.obo";
         OBOPaser instance = new OBOPaser();
         List expResult = null;
-        List result = instance.getTerms(strFile);
-        assertEquals(expResult, result);
+        instance.parser(strFile);
+        
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

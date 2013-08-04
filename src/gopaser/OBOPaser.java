@@ -5,7 +5,6 @@
 package gopaser;
 import java.io.*;
 import java.util.*;
-//import java.util.Queue; 
 import java.util.concurrent.LinkedBlockingQueue; 
 /**
  *
@@ -19,102 +18,88 @@ public class OBOPaser
     public OBOPaser() {
         this.terms = new ArrayList<Term>();
     }
-    
-    public class Term implements Cloneable
-    {
-
-        public Term() {
-            this.parentsID = new ArrayList<String>();
-            this.childrenID = new ArrayList<String>();
-            GOID = "";
-            GOName = "";
-            GOType = "";
-            path  = "";
-            parentsID.clear();
-            childrenID.clear();
-        }
-        
-        public void clone(Term term)
-        {
-            this.GOID = term.GOID;
-            this.GOName = term.GOName;
-            this.GOType = term.GOType;
-            
-            List<String> parents = term.getAllParents();
-            for (int i=0; i<parents.size(); i++)
-            {
-                this.parentsID.add(parents.get(i));
-            }
-            
-            List<String> children = term.getAllChildren();
-            for (int i=0; i<children.size(); i++)
-            {
-                this.parentsID.add(children.get(i));
-            }
-        }
-        
-        public void clear()
-        {
-            GOID = "";
-            GOName = "";
-            GOType = "";
-            path  = "-1";
-            parentsID.clear();
-            childrenID.clear();
-        }
-        
-        //Insert a parent to this term
-        public void insertParent(String ID)
-        {
-            parentsID.add(ID);
-        }
-        
-        //Insert a child to this term
-        public void insertChild(String ID)
-        {
-            childrenID.add(ID);
-        }
-        
-        //Return all the parents' ID of this term
-        public List<String> getAllParents()
-        {
-            return parentsID;
-        }
-        
-
-        /**
-         * Return all the children's ID of this term
-         * @return
-         */
-        public List<String> getAllChildren()
-        {
-            return childrenID;
-        }
-        
-        public String GOID;
-        public String GOName;
-        public String GOType;
-        public String path;
-        private List<String> parentsID; 
-        private List<String> childrenID;
-    }
-
 
     /**
      * Obtain all terms recorded in OBO file that given by strFile
      * @param strFile: The full path of OBO file
      * @return
      */
-    public List<Term> getTerms(String strFile)
+    public void parser(String strFile)
     {
         readTermsFromFile(strFile);
         completeChildrenIDs();
         createPaths();
-        createNameFile("D:\\NameFile.txt");
-        return terms;
     }
+    
+    
+    public void createNameFile(String strOutputFile)
+    {
+        if (terms == null)
+            return;
         
-    public void readTermsFromFile(String strFile)
+        try
+        {
+            File f = new File(strOutputFile);
+            f.createNewFile();
+            FileWriter fw = new FileWriter(strOutputFile);
+
+            String strLine = "GOID" + "\t" + "GO Name" + "\t" + "GO Type" + "\n";
+            fw.write(strLine);
+            for (int i=0; i<terms.size(); i++)
+            {
+                Term term = terms.get(i);
+                strLine = "";
+                strLine = term.GOID + "\t" + term.GOName + "\t" + term.GOType + "\n";
+                fw.write(strLine);
+            }
+            fw.flush();
+
+            fw.close();            
+        }
+        catch(IOException ex)
+        {
+            System.out.println(ex.toString());
+        }
+    }    
+    
+    
+    public void createPathFile(String strOutputFile)
+    {
+        if (terms == null)
+            return;
+        
+        try
+        {
+            File f = new File(strOutputFile);
+            f.createNewFile();
+            FileWriter fw = new FileWriter(strOutputFile);
+
+            String strLine = "Path" + "\t" + "GOID" + "\n";
+            fw.write(strLine);
+            for (int i=0; i<terms.size(); i++)
+            {
+                Term term = terms.get(i);
+                strLine = "";
+                strLine = term.path + "\t" + term.GOID + "\n";
+                fw.write(strLine);
+            }
+            fw.flush();
+
+            fw.close();            
+        }
+        catch(IOException ex)
+        {
+            System.out.println(ex.toString());
+        }
+    }
+    
+    
+    public void createMappingFile(String ensFile, String outputFile, boolean bNested)
+    {
+        
+    }
+    
+    private void readTermsFromFile(String strFile)
     {
         FileReader fr;
         BufferedReader br;
@@ -205,7 +190,7 @@ public class OBOPaser
         }
     }
     
-    public void completeChildrenIDs()
+    private void completeChildrenIDs()
     {
         for (int i=0; i<terms.size(); i++)
         {
@@ -226,7 +211,7 @@ public class OBOPaser
         }
     }
     
-    public void createPaths()
+    private void createPaths()
     {
         // Find the indexes of root nodes in all the terms
         Queue<Term> qTerm = new LinkedBlockingQueue<Term>(); 
@@ -262,7 +247,7 @@ public class OBOPaser
                 int index = findIndexbyID(GOID);
                 Term term = terms.get(index);
                 term.path = tmpTerm.path + "." + Integer.toString(i);
-                if (term.childrenID.size()>0)
+                if (term.getAllChildren().size() > 0)
                     qTerm.offer(term);
             }
             qTerm.poll();
@@ -275,34 +260,33 @@ public class OBOPaser
 //        }
     }
     
-    public void createNameFile(String strFile)
+    private List<String> getAllParents(String GOID)
     {
-        if (terms == null)
-            return;
+        Term term;
+        int index;
+        List<String> tmpList;
+        List<String> result = new ArrayList<String>();
+        Queue<String> qParents = new LinkedBlockingQueue<String>();
+        qParents.offer(GOID);
         
-        try
+        while (qParents.peek()!=null)
         {
-            File f = new File(strFile);
-            f.createNewFile();
-            FileWriter fw = new FileWriter(strFile);
-
-            String strLine = "GOID" + "\t" + "GO Name" + "\t" + "GO Type" + "\n";
-            fw.write(strLine);
-            for (int i=0; i<terms.size(); i++)
+            String id = qParents.peek();
+            index = findIndexbyID(id);
+            term = terms.get(index);
+            tmpList = term.getAllParents();
+            for (int i=0; i<tmpList.size(); i++)
             {
-                Term term = terms.get(i);
-                strLine = "";
-                strLine = term.GOID + "\t" + term.GOName + "\t" + term.GOType + "\n";
-                fw.write(strLine);
+                result.add(tmpList.get(i));
+                qParents.offer(tmpList.get(i));
             }
-            fw.flush();
+            tmpList.clear();
+            term.clear();
+            
+            qParents.poll();
+        }
 
-            fw.close();            
-        }
-        catch(IOException ex)
-        {
-            System.out.println(ex.toString());
-        }
+        return result;
     }
     
     private int findIndexbyID(String GOID)
@@ -319,5 +303,5 @@ public class OBOPaser
         return index;
     }
     
-    public List<Term> terms;
+    private List<Term> terms;
 }

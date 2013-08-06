@@ -39,7 +39,7 @@ public class OBOPaserTest {
 
     /**
      * Test of getTerms method, of class OBOPaser.
-     */
+     
     @Test
     public void testGetTerms() {
         System.out.println("getTerms");
@@ -48,6 +48,62 @@ public class OBOPaserTest {
         List expResult = null;
         instance.parser(strFile);
         
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }*/
+
+    /**
+     * Test of parser method, of class OBOPaser.
+     
+    @Test
+    public void testParser() {
+        System.out.println("parser");
+        String strFile = "D:\\workspace\\GOParser\\GOPaser\\build\\test\\TestData\\GO_Database_20130720\\goslim_yeast.obo";
+        OBOPaser instance = new OBOPaser();
+        instance.parser(strFile);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }*/
+
+    /**
+     * Test of createNameFile method, of class OBOPaser.
+     
+    @Test
+    public void testCreateNameFile() {
+        System.out.println("createNameFile");
+        String strOutputFile = "";
+        OBOPaser instance = new OBOPaser();
+        instance.createNameFile(strOutputFile);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }*/
+
+    /**
+     * Test of createPathFile method, of class OBOPaser.
+     
+    @Test
+    public void testCreatePathFile() {
+        System.out.println("createPathFile");
+        String strOutputFile = "";
+        OBOPaser instance = new OBOPaser();
+        instance.createPathFile(strOutputFile);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }*/
+
+    /**
+     * Test of createMappingFile method, of class OBOPaser.
+     */
+    @Test
+    public void testCreateMappingFile() {
+        System.out.println("createMappingFile");
+        String ensFile = "D:\\workspace\\GOParser\\GOPaser\\build\\test\\TestData\\MappingFile\\Sc\\Ensembl_to_Nested-GO.txt";
+        String outputFile = "D:\\workspace\\GOParser\\GOPaser\\build\\test\\TestData\\MappingFile\\Sc\\Sc_GOslim_Current.txt";
+        String strFile = "D:\\workspace\\GOParser\\GOPaser\\build\\test\\TestData\\GO_Database_20130720\\gene_ontology.1_2.obo";
+        boolean bNested = false;
+        OBOPaser instance = new OBOPaser();
+        instance.parser(strFile);
+        instance.createMappingFile(ensFile, outputFile, bNested);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

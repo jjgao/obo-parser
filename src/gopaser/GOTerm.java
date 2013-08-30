@@ -21,6 +21,7 @@ public class GOTerm implements Cloneable
     
     public void clear()
     {
+        index = -1;
         GOID = "";
         GOName = "";
         GOType = "";

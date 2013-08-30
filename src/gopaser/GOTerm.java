@@ -32,6 +32,7 @@ public class GOTerm implements Cloneable
     
     public void clone(GOTerm term)
     {
+        this.index = term.index;
         this.GOID = term.GOID;
         this.GOName = term.GOName;
         this.GOType = term.GOType;
@@ -52,7 +53,7 @@ public class GOTerm implements Cloneable
         }
     }
     
-    
+    public int index;
     public String GOID;
     public String GOName;
     public String GOType;

@@ -55,7 +55,7 @@ public class oboParser
                     {
                         GOTerm tmpTerm = new GOTerm();
                         tmpTerm.clone(term);
-                        tmpTerm.index = iNum-1;
+                        tmpTerm.index = terms.size();
                         terms.add(tmpTerm);
                         term.clear();
                         continue;
@@ -68,7 +68,7 @@ public class oboParser
                         bReady = false;
                         GOTerm tmpTerm = new GOTerm();
                         tmpTerm = term;
-                        tmpTerm.index = iNum;
+                        tmpTerm.index = terms.size();
                         terms.add(tmpTerm);
                         //term.clear();
                         continue;
@@ -143,6 +143,7 @@ public class oboParser
                 if (flag)
                 {
                     map.put(content[1], iNum);
+                    //System.out.println(content[1] + "\t" + Integer.toString(iNum));
                     iNum++;
                     flag = false;
                 }

@@ -114,7 +114,7 @@ public class oboParser
         return terms;
     }
     
-    private HashMap<String, Integer> getMap(String strFile)
+    public HashMap<String, Integer> getMap(String strFile)
     {
         HashMap<String, Integer> map = new HashMap();
         FileReader fr;
@@ -143,6 +143,7 @@ public class oboParser
                 if (flag)
                 {
                     map.put(content[1], iNum);
+                    
                     //System.out.println(content[1] + "\t" + Integer.toString(iNum));
                     iNum++;
                     flag = false;

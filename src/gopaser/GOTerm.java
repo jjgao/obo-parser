@@ -21,6 +21,7 @@ public class GOTerm implements Cloneable
     
     public void clear()
     {
+        bLeaf = false;
         index = -1;
         GOID = "";
         GOName = "";
@@ -33,6 +34,7 @@ public class GOTerm implements Cloneable
     
     public void clone(GOTerm term)
     {
+        this.bLeaf = term.bLeaf;
         this.index = term.index;
         this.GOID = term.GOID;
         this.GOName = term.GOName;
@@ -58,6 +60,7 @@ public class GOTerm implements Cloneable
     public String GOID;
     public String GOName;
     public String GOType;
+    public boolean bLeaf;
     public List<String> path;
     public List<Integer> parents; 
     public List<Integer> children;

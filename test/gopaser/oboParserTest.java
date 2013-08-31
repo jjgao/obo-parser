@@ -45,8 +45,8 @@ public class oboParserTest {
     @Test
     public void testParser() {
         System.out.println("parser");
-        //String strFile = "D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\gene_ontology.1_2.obo";
-        String strFile = "D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_generic.obo";
+        String strFile = "D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\gene_ontology.1_2.obo";
+        //String strFile = "D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_generic.obo";
         oboParser instance = new oboParser();
         List<GOTerm> expResult = null;
         List<GOTerm> result = instance.parser(strFile);

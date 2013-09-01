@@ -26,14 +26,14 @@ public class GOMapping
         //System.out.println("Perser:" + strOBOFile);
         List<GOTerm> terms = parser.parser(strOBOFile);
         buildTermTree(terms);
-        for(GOTerm term: terms)
-        {
-            if(term.children.size()>0)
-            {
-                for(String str: term.path)
-                    System.out.println(term.GOID + "\t" + str);
-            }
-        }
+//        for(GOTerm term: terms)
+//        {
+//            if(term.children.size()>0)
+//            {
+//                for(String str: term.path)
+//                    System.out.println(term.GOID + "\t" + str);
+//            }
+//        }
            
         //System.out.println();
     }    
@@ -120,50 +120,97 @@ public class GOMapping
         //System.out.println("Filled Children");
     }
     
+    private void fillChildrenPath(int index, List<GOTerm> terms)
+    {
+        GOTerm father = terms.get(index);
+                
+        for(String path: father.path)
+        {
+            int iOrder = 0;
+            for(int i=0; i<father.children.size(); i++)
+            {
+                GOTerm child = terms.get(father.children.get(i));
+                child.path.add(path + "." + Integer.toString(i));
+            }
+        }
+        
+        for(int child: father.children)
+        {
+            fillChildrenPath(child, terms);
+        }
+    }
+    
     private void fillPath(List<GOTerm> terms)
     {
         //System.out.println("Filling Path");
         if(terms==null || terms.isEmpty())
             return;
         
-        Queue<Integer> qTerms = new LinkedBlockingQueue<Integer>();
+        int indexBP = -1;
+        int indexMF = -1;
+        int indexCC = -1;
         for(GOTerm term: terms)
         {
             if(term.GOName.equals("biological_process"))
             {
                 term.path.add("0");
-                qTerms.offer(term.index);
+                indexBP = term.index;
             }
             if(term.GOName.equals("molecular_function"))
             {
                 term.path.add("1");
-                qTerms.offer(term.index);
+                indexMF = term.index;                
             }
             if(term.GOName.equals("cellular_component"))
             {
                 term.path.add("2");
-                qTerms.offer(term.index);
+                indexCC = term.index;                
             }
         }
         
-        while (qTerms.peek()!=null)
-        {
-            int index = qTerms.peek();
-            GOTerm father = terms.get(index);
-
-            for (int i=0; i<father.children.size(); i++)
-            {
-                int childIndex = father.children.get(i);
-                for(String fatherPath: father.path)
-                {
-                    terms.get(childIndex).path.add(fatherPath + "." + Integer.toString(i));
-                }
-                if (terms.get(childIndex).children.size() > 0)
-                    qTerms.offer(childIndex);
-            }
-           
-            qTerms.poll();
-        }
+        fillChildrenPath(indexBP, terms);
+        fillChildrenPath(indexMF, terms);
+        fillChildrenPath(indexCC, terms);
+        
+        
+//        Queue<Integer> qTerms = new LinkedBlockingQueue<Integer>();
+//        for(GOTerm term: terms)
+//        {
+//            if(term.GOName.equals("biological_process"))
+//            {
+//                term.path.add("0");
+//                qTerms.offer(term.index);
+//            }
+//            if(term.GOName.equals("molecular_function"))
+//            {
+//                term.path.add("1");
+//                qTerms.offer(term.index);
+//            }
+//            if(term.GOName.equals("cellular_component"))
+//            {
+//                term.path.add("2");
+//                qTerms.offer(term.index);
+//            }
+//        }
+//        
+//        while (qTerms.peek()!=null)
+//        {
+//            int index = qTerms.peek();
+//            GOTerm father = terms.get(index);
+//
+//            for (int i=0; i<father.children.size(); i++)
+//            {
+//                int childIndex = father.children.get(i);
+//                for(String fatherPath: father.path)
+//                {
+//                    terms.get(childIndex).path.add(fatherPath + "." + Integer.toString(i));
+//                }
+//                if (terms.get(childIndex).children.size() > 0)
+//                    qTerms.offer(childIndex);
+//            }
+//           
+//            qTerms.poll();
+//        }
         //System.out.println("Filled Path");
     }
 }

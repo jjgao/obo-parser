@@ -56,7 +56,7 @@ public class GOMappingTest {
 
     /**
      * Test of createPathFile method, of class GOMapping.
-     */
+     
     @Test
     public void testCreatePathFile() {
         System.out.println("createPathFile");
@@ -66,11 +66,11 @@ public class GOMappingTest {
         instance.createPathFile(strOBOFile, strPathFile);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
-    }
+    }*/
 
     /**
      * Test of test method, of class GOMapping.
-     */
+     
     @Test
     public void testTest() {
         System.out.println("test");
@@ -95,6 +95,6 @@ public class GOMappingTest {
         //instance.test(strOBOFile);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
-    }
+    }*/
     
 }

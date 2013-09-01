@@ -23,7 +23,7 @@ public class GOMapping
     public void createNameFile(String strOBOFile, String strNameFile)
     {
         oboParser parser = new oboParser();
-        System.out.println("Perser:" + strOBOFile);
+        //System.out.println("Perser:" + strOBOFile);
         List<GOTerm> terms = parser.parser(strOBOFile);
         buildTermTree(terms);
         for(GOTerm term: terms)
@@ -35,13 +35,67 @@ public class GOMapping
             }
         }
            
-        System.out.println();
+        //System.out.println();
     }    
     
     
     public void createPathFile(String strOBOFile, String strPathFile)
     {
         
+    }
+    
+    public void test(String strOBOFile)
+    {
+        oboParser parser = new oboParser();
+        List<GOTerm> terms = parser.parser(strOBOFile);
+        fillChildren(terms);
+        
+        int iNum = 0;
+        System.out.println("Testing of GO file" + "\t" + strOBOFile);
+        System.out.println("TOTLE NUMBER: " + Integer.toString(terms.size()));
+        System.out.println("--------------------------------------------------------------------------------------");
+        
+        //How many isolate terms
+        System.out.println("The following terms are isolate:");
+        System.out.println("GOID" + "\t" + "Children Number" + "\t" + "Parents Number");
+        for(GOTerm term: terms)
+        {
+            if (term.children.size()==0 && term.parents.size()==0)
+            {
+                iNum++;
+                //System.out.println(term.GOID + "\t" + Integer.toString(term.children.size()) + "\t" + Integer.toString(term.parents.size()));
+            }
+        }
+        System.out.println("TOTLE NUMBER: " + Integer.toString(iNum));
+        System.out.println("--------------------------------------------------------------------------------------");
+                
+        iNum = 0;
+        System.out.println("The following terms have no parent but have children:");
+        System.out.println("GOID" + "\t" + "Children Number" + "\t" + "Parents Number");
+        for(GOTerm term: terms)
+        {
+            if (term.children.size()>0 && term.parents.size()==0)
+            {
+                iNum++;
+                //System.out.println(term.GOID + "\t" + Integer.toString(term.children.size()) + "\t" + Integer.toString(term.parents.size()));
+            }
+        }
+        System.out.println("TOTLE NUMBER: " + Integer.toString(iNum));
+        System.out.println("--------------------------------------------------------------------------------------");
+        
+        iNum = 0;
+        System.out.println("The following terms are leavies:");
+        System.out.println("GOID" + "\t" + "Children Number" + "\t" + "Parents Number");
+        for(GOTerm term: terms)
+        {
+            if (term.children.size()==0 && term.parents.size()>0)
+            {
+                iNum++;
+                //System.out.println(term.GOID + "\t" + Integer.toString(term.children.size()) + "\t" + Integer.toString(term.parents.size()));
+            }
+        }
+        System.out.println("TOTLE NUMBER: " + Integer.toString(iNum));
+        System.out.println("--------------------------------------------------------------------------------------");
     }
     
     private void buildTermTree(List<GOTerm> terms)
@@ -52,7 +106,7 @@ public class GOMapping
     
     private void fillChildren(List<GOTerm> terms)
     {
-        System.out.println("Filling Children");
+       //System.out.println("Filling Children");
         if(terms==null || terms.isEmpty())
             return;
         
@@ -63,12 +117,12 @@ public class GOMapping
                 terms.get(index).children.add(term.index);
             }
         }
-        System.out.println("Filled Children");
+        //System.out.println("Filled Children");
     }
     
     private void fillPath(List<GOTerm> terms)
     {
-        System.out.println("Filling Path");
+        //System.out.println("Filling Path");
         if(terms==null || terms.isEmpty())
             return;
         
@@ -110,6 +164,6 @@ public class GOMapping
            
             qTerms.poll();
         }
-        System.out.println("Filled Path");
+        //System.out.println("Filled Path");
     }
 }

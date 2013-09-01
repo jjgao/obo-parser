@@ -6,6 +6,8 @@
 
 package gopaser;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -62,6 +64,35 @@ public class GOMappingTest {
         String strPathFile = "";
         GOMapping instance = new GOMapping();
         instance.createPathFile(strOBOFile, strPathFile);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of test method, of class GOMapping.
+     */
+    @Test
+    public void testTest() {
+        System.out.println("test");
+        GOMapping instance = new GOMapping();
+        List<String> list = new ArrayList<String>();
+        list.add("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\gene_ontology.1_2.obo");
+        list.add("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\gene_ontology_ext.obo");
+        list.add("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_aspergillus.obo");
+        list.add("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_candida.obo");
+        list.add("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_generic.obo");
+        list.add("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_metagenomics.obo");
+        list.add("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_pir.obo");
+        list.add("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_plant.obo");
+        list.add("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_pombe.obo");
+        list.add("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_yeast.obo");
+        for (String str: list)
+        {
+            instance.test(str);
+        }
+        
+        //String strOBOFile = "D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\gene_ontology.1_2.obo";
+        //instance.test(strOBOFile);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

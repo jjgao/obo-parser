@@ -20,12 +20,12 @@ public class oboParser
     
     public oboParser() {
         this.terms = new ArrayList<GOTerm>();
-        this.path = new ArrayList<String>();
     }
     
     
     public List<GOTerm> parser(String strFile)
     {
+        terms.clear();
         FileReader fr;
         BufferedReader br;
 
@@ -203,14 +203,12 @@ public class oboParser
         for (int index=0; index<terms.size(); index++)
         {
             GOTerm term = terms.get(index);
-            if (term.bLeaf)
+            //if (term.bLeaf)
                 buildPath(term.index, term.path);
-            for(String str: term.path)
-                System.out.println(str + "\t" + term.GOID);
+//            for(String str: term.path)
+//                System.out.println(str + "\t" + term.GOID);
         }
     }
-    
-    
     
     private void buildPath(int termIndex, List<String> lstPath)
     {       
@@ -272,50 +270,49 @@ public class oboParser
         }
     }
     
-    public void buildPath(int termIndex, String currentPath)
-    {
-        if(terms==null || terms.isEmpty())
-            return;
-        
-        GOTerm thisTerm = terms.get(termIndex);
-        
-        if (thisTerm.GOName.equals(thisTerm.GOType))
-        {
-            if(thisTerm.GOName.equals("biological_process"))
-            {
-                path.add(Integer.toString(0)+ "." + currentPath);
-                return;
-            }
-            if(thisTerm.GOName.equals("molecular_function"))
-            {
-                path.add(Integer.toString(1)+ "." + currentPath);
-                return;
-            }
-            if(thisTerm.GOName.equals("cellular_component"))
-            {
-                path.add(Integer.toString(2)+ "." + currentPath);
-                return;
-            }
-        }
-        
-        System.out.println("Term " + thisTerm.GOID + "is reached");
-        for(int parent: thisTerm.parents)
-        {
-            GOTerm parentTerm = terms.get(parent);
-            //System.out.println("Term " + parentTerm.GOID + "have been searched");
-            int iOrder = -1;
-            for(int index=0; index<parentTerm.children.size(); index++)
-            {
-                GOTerm term = terms.get(index);
-                if(term.index == thisTerm.index)
-                    iOrder = index;
-            }
-            if(iOrder >= 0)
-                buildPath(parent, Integer.toString(iOrder)+"."+currentPath);
-        }
-        System.out.println("Term " + thisTerm.GOID + "have been searched");
-    }
+//    public void buildPath(int termIndex, String currentPath)
+//    {
+//        if(terms==null || terms.isEmpty())
+//            return;
+//        
+//        GOTerm thisTerm = terms.get(termIndex);
+//        
+//        if (thisTerm.GOName.equals(thisTerm.GOType))
+//        {
+//            if(thisTerm.GOName.equals("biological_process"))
+//            {
+//                path.add(Integer.toString(0)+ "." + currentPath);
+//                return;
+//            }
+//            if(thisTerm.GOName.equals("molecular_function"))
+//            {
+//                path.add(Integer.toString(1)+ "." + currentPath);
+//                return;
+//            }
+//            if(thisTerm.GOName.equals("cellular_component"))
+//            {
+//                path.add(Integer.toString(2)+ "." + currentPath);
+//                return;
+//            }
+//        }
+//        
+//        System.out.println("Term " + thisTerm.GOID + "is reached");
+//        for(int parent: thisTerm.parents)
+//        {
+//            GOTerm parentTerm = terms.get(parent);
+//            //System.out.println("Term " + parentTerm.GOID + "have been searched");
+//            int iOrder = -1;
+//            for(int index=0; index<parentTerm.children.size(); index++)
+//            {
+//                GOTerm term = terms.get(index);
+//                if(term.index == thisTerm.index)
+//                    iOrder = index;
+//            }
+//            if(iOrder >= 0)
+//                buildPath(parent, Integer.toString(iOrder)+"."+currentPath);
+//        }
+//        System.out.println("Term " + thisTerm.GOID + "have been searched");
+//    }
    
     private List<GOTerm> terms;
-    private List<String> path;
 }

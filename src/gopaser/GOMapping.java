@@ -19,36 +19,91 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class GOMapping 
 {
-    //public void mapping()
-    public void createNameFile(String strOBOFile, String strNameFile)
+    public GOMapping()
     {
+        terms = null;
+    }
+    public void init(String strOBOFile)
+    {
+        terms = null;
         oboParser parser = new oboParser();
-        //System.out.println("Perser:" + strOBOFile);
-        List<GOTerm> terms = parser.parser(strOBOFile);
-        buildTermTree(terms);
-//        for(GOTerm term: terms)
-//        {
-//            if(term.children.size()>0)
-//            {
-//                for(String str: term.path)
-//                    System.out.println(term.GOID + "\t" + str);
-//            }
-//        }
-           
-        //System.out.println();
+        terms = parser.parser(strOBOFile);
+        
+    }
+    
+    public void createNameFile(String strNameFile)
+    {
+        if (terms == null)
+            return;
+        
+         try
+        {
+            File f = new File(strNameFile);
+            f.createNewFile();
+            FileWriter fw = new FileWriter(strNameFile);
+
+            String strLine = "GOID" + "\t" + "GO Name" + "\t" + "GO Type" + "\n";
+            fw.write(strLine);
+            for (GOTerm term: terms)
+            {
+                strLine = "";
+                strLine = term.GOID + "\t" + term.GOName + "\t" + term.GOType + "\n";
+                fw.write(strLine);
+            }
+            fw.flush();
+
+            fw.close();            
+        }
+        catch(IOException ex)
+        {
+            System.out.println(ex.toString());
+        }
     }    
     
     
-    public void createPathFile(String strOBOFile, String strPathFile)
+    public void createPathFile(String strPathFile)
     {
+        if (terms == null)
+            return;
         
+        try
+        {
+            File f = new File(strPathFile);
+            f.createNewFile();
+            FileWriter fw = new FileWriter(strPathFile);
+
+            String strLine = "Path" + "\t" + "GOID" + "\n";
+            fw.write(strLine);
+            for (GOTerm term: terms)
+            {
+                for(String path: term.path)
+                {
+                    strLine = "";
+                    strLine = path.substring(0, path.length()-1) + "\t" + term.GOID + "\n";
+                    fw.write(strLine);
+                }
+            }
+            fw.flush();
+            fw.close();            
+        }
+        catch(IOException ex)
+        {
+            System.out.println(ex.toString());
+        }
     }
     
     public void test(String strOBOFile)
     {
         oboParser parser = new oboParser();
         List<GOTerm> terms = parser.parser(strOBOFile);
-        fillChildren(terms);
+
+        for(GOTerm term: terms)
+        {
+            if(term.GOID.equals("GO:0046467"))
+            {
+                System.out.println();
+            }
+        }
         
         int iNum = 0;
         System.out.println("Testing of GO file" + "\t" + strOBOFile);
@@ -97,123 +152,6 @@ public class GOMapping
         System.out.println("TOTLE NUMBER: " + Integer.toString(iNum));
         System.out.println("--------------------------------------------------------------------------------------");
     }
-    
-    private void buildTermTree(List<GOTerm> terms)
-    {
-        fillChildren(terms);
-        fillPath(terms);
-    }
-    
-    private void fillChildren(List<GOTerm> terms)
-    {
-       //System.out.println("Filling Children");
-        if(terms==null || terms.isEmpty())
-            return;
-        
-        for(GOTerm term: terms)
-        {
-            for(int index: term.parents)
-            {
-                terms.get(index).children.add(term.index);
-            }
-        }
-        //System.out.println("Filled Children");
-    }
-    
-    private void fillChildrenPath(int index, List<GOTerm> terms)
-    {
-        GOTerm father = terms.get(index);
-                
-        for(String path: father.path)
-        {
-            int iOrder = 0;
-            for(int i=0; i<father.children.size(); i++)
-            {
-                GOTerm child = terms.get(father.children.get(i));
-                child.path.add(path + "." + Integer.toString(i));
-            }
-        }
-        
-        for(int child: father.children)
-        {
-            fillChildrenPath(child, terms);
-        }
-    }
-    
-    private void fillPath(List<GOTerm> terms)
-    {
-        //System.out.println("Filling Path");
-        if(terms==null || terms.isEmpty())
-            return;
-        
-        int indexBP = -1;
-        int indexMF = -1;
-        int indexCC = -1;
-        for(GOTerm term: terms)
-        {
-            if(term.GOName.equals("biological_process"))
-            {
-                term.path.add("0");
-                indexBP = term.index;
-            }
-            if(term.GOName.equals("molecular_function"))
-            {
-                term.path.add("1");
-                indexMF = term.index;                
-            }
-            if(term.GOName.equals("cellular_component"))
-            {
-                term.path.add("2");
-                indexCC = term.index;                
-            }
-        }
-        
-        fillChildrenPath(indexBP, terms);
-        fillChildrenPath(indexMF, terms);
-        fillChildrenPath(indexCC, terms);
-        
-        
-//        Queue<Integer> qTerms = new LinkedBlockingQueue<Integer>();
-//        for(GOTerm term: terms)
-//        {
-//            if(term.GOName.equals("biological_process"))
-//            {
-//                term.path.add("0");
-//                qTerms.offer(term.index);
-//            }
-//            if(term.GOName.equals("molecular_function"))
-//            {
-//                term.path.add("1");
-//                qTerms.offer(term.index);
-//            }
-//            if(term.GOName.equals("cellular_component"))
-//            {
-//                term.path.add("2");
-//                qTerms.offer(term.index);
-//            }
-//        }
-//        
-//        while (qTerms.peek()!=null)
-//        {
-//            int index = qTerms.peek();
-//            GOTerm father = terms.get(index);
-//
-//            for (int i=0; i<father.children.size(); i++)
-//            {
-//                int childIndex = father.children.get(i);
-//                for(String fatherPath: father.path)
-//                {
-//                    terms.get(childIndex).path.add(fatherPath + "." + Integer.toString(i));
-//                }
-//                if (terms.get(childIndex).children.size() > 0)
-//                    qTerms.offer(childIndex);
-//            }
-//           
-//            qTerms.poll();
-//        }
-        //System.out.println("Filled Path");
-    }
-    
-    
-    
+
+    private List<GOTerm> terms;
 }

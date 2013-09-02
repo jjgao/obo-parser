@@ -50,21 +50,23 @@ public class oboParserTest {
         oboParser instance = new oboParser();
         List<GOTerm> expResult = null;
         List<GOTerm> result = instance.parser(strFile);
-        for(int i= 0; i<result.size(); i++)
-        {
-            GOTerm term = result.get(i);
-            if(i != term.index)
-                System.out.println("The " + Integer.toString(i) + "term's index is: " + Integer.toString(term.index));
-        }
-        for(GOTerm term: result)
-        {
-            System.out.print(Integer.toString(term.index) + "\t" + term.GOID + "\t" + term.GOName + "\t" + term.GOType + "\t");
-            for (int index: term.parents)
-            {
-                System.out.print(Integer.toString(index) + "\t");
-            }
-            System.out.println();
-        }
+        
+        
+//        for(int i= 0; i<result.size(); i++)
+//        {
+//            GOTerm term = result.get(i);
+//            if(i != term.index)
+//                System.out.println("The " + Integer.toString(i) + "term's index is: " + Integer.toString(term.index));
+//        }
+//        for(GOTerm term: result)
+//        {
+//            System.out.print(Integer.toString(term.index) + "\t" + term.GOID + "\t" + term.GOName + "\t" + term.GOType + "\t");
+//            for (int index: term.parents)
+//            {
+//                System.out.print(Integer.toString(index) + "\t");
+//            }
+//            System.out.println();
+//        }
         assertEquals(expResult, result);
         
         // TODO review the generated test code and remove the default call to fail.

@@ -42,7 +42,7 @@ public class GOMappingTest {
 
     /**
      * Test of createNameFile method, of class GOMapping.
-     */
+     
     @Test
     public void testCreateNameFile() {
         System.out.println("createNameFile");
@@ -52,7 +52,7 @@ public class GOMappingTest {
         instance.createNameFile(strOBOFile, strNameFile);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
-    }
+    }*/
 
     /**
      * Test of createPathFile method, of class GOMapping.
@@ -60,13 +60,31 @@ public class GOMappingTest {
     @Test
     public void testCreatePathFile() {
         System.out.println("createPathFile");
-        String strOBOFile = "";
+        String strOBOFile = "D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\gene_ontology.1_2.obo";
         String strPathFile = "";
         GOMapping instance = new GOMapping();
-        instance.createPathFile(strOBOFile, strPathFile);
+        instance.createPathFile(strPathFile);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }*/
+
+
+    /**
+     * Test of init method, of class GOMapping.
+     */
+    @Test
+    public void testInit() {
+        System.out.println("init");
+        String strOBOFile = "D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\gene_ontology.1_2.obo";
+        GOMapping instance = new GOMapping();
+        instance.init(strOBOFile);
+        //instance.createNameFile("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\NameFile.txt");
+        instance.createPathFile("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\AllPathFile.txt");
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+   
 
     /**
      * Test of test method, of class GOMapping.

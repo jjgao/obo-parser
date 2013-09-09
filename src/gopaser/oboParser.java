@@ -29,7 +29,7 @@ public class oboParser
         FileReader fr;
         BufferedReader br;
 
-        HashMap<String, Integer> map = getMap(strFile);
+        map = getMap(strFile);
         
         try
         {
@@ -124,7 +124,12 @@ public class oboParser
         return terms;
     }
     
-    public HashMap<String, Integer> getMap(String strFile)
+    public HashMap<String, Integer> getMap()
+    {
+        return map;
+    }
+    
+    private HashMap<String, Integer> getMap(String strFile)
     {
         HashMap<String, Integer> map = new HashMap();
         FileReader fr;
@@ -172,6 +177,15 @@ public class oboParser
         }
         
         return map;
+    }
+    
+    public int getIndex(String strID)
+    {
+        if(map == null || map.isEmpty())
+            return -1;
+        
+        int index = map.get(strID);
+        return index;
     }
     
     private void fillChildren()
@@ -270,49 +284,7 @@ public class oboParser
         }
     }
     
-//    public void buildPath(int termIndex, String currentPath)
-//    {
-//        if(terms==null || terms.isEmpty())
-//            return;
-//        
-//        GOTerm thisTerm = terms.get(termIndex);
-//        
-//        if (thisTerm.GOName.equals(thisTerm.GOType))
-//        {
-//            if(thisTerm.GOName.equals("biological_process"))
-//            {
-//                path.add(Integer.toString(0)+ "." + currentPath);
-//                return;
-//            }
-//            if(thisTerm.GOName.equals("molecular_function"))
-//            {
-//                path.add(Integer.toString(1)+ "." + currentPath);
-//                return;
-//            }
-//            if(thisTerm.GOName.equals("cellular_component"))
-//            {
-//                path.add(Integer.toString(2)+ "." + currentPath);
-//                return;
-//            }
-//        }
-//        
-//        System.out.println("Term " + thisTerm.GOID + "is reached");
-//        for(int parent: thisTerm.parents)
-//        {
-//            GOTerm parentTerm = terms.get(parent);
-//            //System.out.println("Term " + parentTerm.GOID + "have been searched");
-//            int iOrder = -1;
-//            for(int index=0; index<parentTerm.children.size(); index++)
-//            {
-//                GOTerm term = terms.get(index);
-//                if(term.index == thisTerm.index)
-//                    iOrder = index;
-//            }
-//            if(iOrder >= 0)
-//                buildPath(parent, Integer.toString(iOrder)+"."+currentPath);
-//        }
-//        System.out.println("Term " + thisTerm.GOID + "have been searched");
-//    }
-   
+
+    private HashMap<String, Integer> map;
     private List<GOTerm> terms;
 }

@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import gopaser.ensmartParser.ens2goMapper;
+import java.util.HashMap;
 
 /**
  *
@@ -22,13 +24,15 @@ public class GOMapping
     public GOMapping()
     {
         terms = null;
+        map = null;
     }
     public void init(String strOBOFile)
     {
         terms = null;
+        map = null;
         oboParser parser = new oboParser();
         terms = parser.parser(strOBOFile);
-        
+        map = parser.getMap();
     }
     
     public void createNameFile(String strNameFile)
@@ -84,6 +88,69 @@ public class GOMapping
                 }
             }
             fw.flush();
+            fw.close();            
+        }
+        catch(IOException ex)
+        {
+            System.out.println(ex.toString());
+        }
+    }
+    
+    public void createMappingFile(String ensFile, String strOutputFile, boolean bNested)
+    {
+        ensmartParser ens = new ensmartParser();
+        List<ens2goMapper> mapper = ens.parser(ensFile);
+        
+        if (mapper.isEmpty())
+            return;
+        
+        if (terms==null  || terms.isEmpty())
+            return;
+        
+        if (map==null  || map.isEmpty())
+            return;
+        
+        try
+        {
+            File f = new File(strOutputFile);
+            f.createNewFile();
+            FileWriter fw = new FileWriter(strOutputFile);
+
+            String strLine = "Ensembl	annotation.GO BIOLOGICAL_PROCESS	annotation.GO CELLULAR_COMPONENT	annotation.GO MOLECULAR_FUNCTION" + "\n";
+            fw.write(strLine);
+            for (int i=0; i<mapper.size(); i++)
+            {
+                ens2goMapper item = mapper.get(i);
+                strLine = item.strEnsemblID + "\t";
+                String strBP = "";
+                String strCC = "";
+                String strMF = "";
+                for (int j=0; j<item.GOList.size(); j++)
+                {
+                    String strGOID = item.GOList.get(j);
+                    int index = map.get(strGOID);
+                    if (index<0)
+                        continue;
+                    
+                    GOTerm term = terms.get(index); 
+                    if (term.GOType.equals("biological_process"))
+                        strBP += "," + strGOID;
+                    if (term.GOType.equals("cellular_component"))
+                        strCC += "," + strGOID;
+                    if (term.GOType.equals("molecular_function"))
+                        strMF += "," + strGOID;
+                }
+                if(!strBP.isEmpty() && strBP.charAt(0)==',')
+                    strBP = strBP.substring(1, strBP.length());
+                if(!strCC.isEmpty() && strCC.charAt(0)==',')
+                    strCC = strCC.substring(1, strCC.length());
+                if(!strMF.isEmpty() && strMF.charAt(0)==',')
+                    strMF = strMF.substring(1, strMF.length());
+                strLine += strBP + "\t" + strCC + "\t" + strMF + "\n";
+                fw.write(strLine);
+            }
+            fw.flush();
+
             fw.close();            
         }
         catch(IOException ex)
@@ -154,4 +221,5 @@ public class GOMapping
     }
 
     private List<GOTerm> terms;
+    private HashMap<String, Integer> map; 
 }

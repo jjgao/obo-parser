@@ -50,7 +50,7 @@ public class oboParserTest {
         //String strFile = "D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_generic.obo";
         oboParser instance = new oboParser();
         List<GOTerm> expResult = null;
-        List<GOTerm> result = instance.parser(strFile);
+        List<GOTerm> result = instance.parser(strFile, false);
         int index = instance.getIndex("GO:0000001");
         System.out.println(Integer.toString(index));
         

@@ -23,7 +23,7 @@ public class oboParser
     }
     
     
-    public List<GOTerm> parser(String strFile)
+    public List<GOTerm> parser(String strFile, boolean bSlim)
     {
         terms.clear();
         FileReader fr;
@@ -119,8 +119,12 @@ public class oboParser
             System.out.println(ex.toString());
         }
         
-        fillChildren();
-        buildAllPath();     
+        if(!bSlim)
+        {
+            fillChildren();
+            buildAllPath(); 
+        }
+            
         return terms;
     }
     

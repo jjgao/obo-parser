@@ -5,6 +5,7 @@
  */
 
 package gopaser;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.util.List;
@@ -46,13 +47,31 @@ public class oboParserTest {
     @Test
     public void testParser() {
         System.out.println("parser");
-        String strFile = "D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\gene_ontology.1_2.obo";
-        //String strFile = "D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\goslim_generic.obo";
+        //String strFile = "D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\gene_ontology.1_2.obo";
+//        String strFile = "D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_generic.obo";
+//        oboParser instance = new oboParser();
+//        List<GOTerm> expResult = null;
+//        List<GOTerm> result = instance.parser(strFile);
+        List<String> list = new ArrayList<String>();
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\gene_ontology.1_2.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\gene_ontology_ext.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_aspergillus.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_candida.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_generic.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_metagenomics.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_pir.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_plant.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_pombe.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_yeast.obo");
+        
         oboParser instance = new oboParser();
-        List<GOTerm> expResult = null;
-        List<GOTerm> result = instance.parser(strFile, false);
-        int index = instance.getIndex("GO:0000001");
-        System.out.println(Integer.toString(index));
+        for (String str: list)
+        {
+            String nameFile = str.substring(0, str.length()-4) + "_name.txt";
+            String pathFile = str.substring(0, str.length()-4) + "_path.txt";     
+            instance.parser(str);           
+        }
+
         
         
         
@@ -71,7 +90,7 @@ public class oboParserTest {
 //            }
 //            System.out.println();
 //        }
-        assertEquals(expResult, result);
+//        assertEquals(expResult, result);
         
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

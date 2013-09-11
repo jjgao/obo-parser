@@ -76,10 +76,31 @@ public class GOMappingTest {
     public void testInit() {
         System.out.println("init");
         String strOBOFile = "D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\gene_ontology.1_2.obo";
+        List<String> list = new ArrayList<String>();
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\gene_ontology.1_2.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\gene_ontology_ext.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_aspergillus.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_candida.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_generic.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_metagenomics.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_pir.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_plant.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_pombe.obo");
+        list.add("D:\\workspace\\GOPaser\\GO_Database\\GO_Database_20130720\\goslim_yeast.obo");
+        
         GOMapping instance = new GOMapping();
-        instance.init(strOBOFile);
+        for (String str: list)
+        {
+            String nameFile = str.substring(0, str.length()-4) + "_name.txt";
+            String pathFile = str.substring(0, str.length()-4) + "_path.txt";     
+            instance.init(str);
+            instance.createNameFile(nameFile);
+            instance.createPathFile(pathFile);
+            
+        }
+        //instance.init(strOBOFile);
         //instance.createNameFile("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\NameFile.txt");
-        instance.createPathFile("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\AllPathFile.txt");
+        //instance.createPathFile("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\AllPathFile.txt");
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

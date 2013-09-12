@@ -6,14 +6,11 @@
 
 package gopaser;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.io.*;
+import java.util.*;
 import gopaser.ensmartParser.ens2goMapper;
-import java.util.HashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+
 
 /**
  *
@@ -65,8 +62,7 @@ public class GOMapping
             System.out.println(ex.toString());
         }
     }    
-    
-    
+        
     public void createPathFile(String strPathFile)
     {
         if (terms == null)
@@ -159,13 +155,11 @@ public class GOMapping
         }
     }
     
-    public void createMappingFile(String ensFile, String strOutputFile, boolean bNested)
+    public void createMappingFile(String biomartFile, String strOutputFile, boolean bNested)
     {
-        ensmartParser ens = new ensmartParser();
-        List<ens2goMapper> mapper = ens.parser(ensFile);
-        
-        oboParser parser = new oboParser();
-        
+        biomartParser biomart = new biomartParser();
+        List<ENS2GO> mapper = biomart.parser(biomartFile);
+       
         if (mapper.isEmpty())
             return; 
         if (terms==null  || terms.isEmpty())
@@ -181,7 +175,7 @@ public class GOMapping
 
             String strLine = "Ensembl	annotation.GO BIOLOGICAL_PROCESS	annotation.GO CELLULAR_COMPONENT	annotation.GO MOLECULAR_FUNCTION" + "\n";
             fw.write(strLine);
-            for (ens2goMapper item: mapper)
+            for (ENS2GO item: mapper)
             {
                 strLine = item.strEnsemblID + "\t";
                 String strBP = "";
@@ -194,12 +188,20 @@ public class GOMapping
                     
                     int index = map.get(strGOID);
                     GOTerm term = terms.get(index); 
+                    
+                    String parentsID = "";
+                    if(bNested)
+                    {
+                        List<String> parents = getAllParents(index);
+                        for(String str: parents)
+                           parentsID += "," + str;
+                    }
                     if (term.GOType.equals("biological_process"))
-                        strBP += "," + strGOID;
+                        strBP += "," + strGOID + parentsID;
                     if (term.GOType.equals("cellular_component"))
-                        strCC += "," + strGOID;
+                        strCC += "," + strGOID + parentsID;
                     if (term.GOType.equals("molecular_function"))
-                        strMF += "," + strGOID;
+                        strMF += "," + strGOID + parentsID;
                 }
                 if(!strBP.isEmpty() && strBP.charAt(0)==',')
                     strBP = strBP.substring(1, strBP.length());
@@ -281,6 +283,30 @@ public class GOMapping
         System.out.println("--------------------------------------------------------------------------------------");
     }
 
+    private List<String> getAllParents(int index)
+    {
+        List<String> parents = new ArrayList<String>();
+        if(terms==null && terms.isEmpty())
+            return parents;
+        
+        Queue<Integer> items = new LinkedBlockingQueue<Integer>(); 
+        items.offer(index);
+     
+        while (items.peek()!=null)
+        {
+            int item = items.peek();
+            GOTerm thisTerm = terms.get(item);  
+            parents.add(thisTerm.GOName);
+            if(!thisTerm.parents.isEmpty())
+            {
+                for(int parent: thisTerm.parents)    
+                    items.offer(parent);
+            }
+            items.poll();
+        }
+        return parents;
+    }
+    
     private List<GOTerm> terms;
     private HashMap<String, Integer> map; 
 }

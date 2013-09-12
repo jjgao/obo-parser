@@ -131,6 +131,30 @@ public class oboParser
         return map;
     }
     
+    public List<String> getAllParents(int index)
+    {
+        List<String> parents = new ArrayList<String>();
+        if(terms==null && terms.isEmpty())
+            return parents;
+        
+        Queue<Integer> items = new LinkedBlockingQueue<Integer>(); 
+        items.offer(index);
+     
+        while (items.peek()!=null)
+        {
+            int item = items.peek();
+            GOTerm thisTerm = terms.get(item);  
+            parents.add(thisTerm.GOName);
+            if(!thisTerm.parents.isEmpty())
+            {
+                for(int parent: thisTerm.parents)    
+                    items.offer(parent);
+            }
+            items.poll();
+        }
+        return parents;
+    }
+    
     private HashMap<String, Integer> getMap(String strFile)
     {
         HashMap<String, Integer> map = new HashMap();

@@ -17,7 +17,9 @@ public class biomartParser {
     public List<ENS2GO> parser(String strFile)
     {
         List<ENS2GO> result = new ArrayList<ENS2GO>();
+        List<String> ensList = new ArrayList<String>();
         List<String> lst = readFile(strFile);
+
         for(Iterator it = lst.iterator(); it.hasNext();)
         {
             String item = it.next().toString();
@@ -28,13 +30,15 @@ public class biomartParser {
                 continue;
             }
             
-            int index = findMapperIndex(result, content[0]);
+//            int index = findMapperIndex(result, content[0]);
+            int index = ensList.indexOf(content[0]);
             if(index<0)
             {
                 ENS2GO mapper = new ENS2GO();
                 mapper.strEnsemblID = content[0];
                 mapper.GOList.add(content[1]);
                 result.add(mapper);
+                ensList.add(mapper.strEnsemblID);
             }
             else
             {
@@ -42,6 +46,7 @@ public class biomartParser {
             }
             it.remove();
         }
+        
         return result;
     }
     
@@ -78,7 +83,8 @@ public class biomartParser {
                 if (strLine.isEmpty())
                     continue;                
                 result.add(strLine);
-            }    
+            } 
+
             br.close();
             fr.close();
         }
@@ -91,7 +97,7 @@ public class biomartParser {
 
         return result;
     }
-    
+       
     private int findMapperIndex(List<ENS2GO> mapperList, String strEnsemblID)
     {
         int result = -1;
@@ -120,4 +126,5 @@ public class biomartParser {
         return iNum;
     }
     
+    private HashMap<String, Integer> map;
 }

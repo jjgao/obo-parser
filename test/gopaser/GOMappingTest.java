@@ -71,7 +71,7 @@ public class GOMappingTest {
 
     /**
      * Test of init method, of class GOMapping.
-     */
+     
     @Test
     public void testInit() {
         System.out.println("init");
@@ -103,7 +103,7 @@ public class GOMappingTest {
         //instance.createPathFile("D:\\workspace\\GOParser\\GO Database\\GO_Database_20130720\\AllPathFile.txt");
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
-    }
+    }*/
 
    
 
@@ -135,5 +135,35 @@ public class GOMappingTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }*/
+
+    /**
+     * Test of createMappingFile method, of class GOMapping.
+     
+    @Test
+    public void testCreateMappingFile_String_String() {
+        System.out.println("createMappingFile");
+        String ensFile = "";
+        String strOutputFile = "";
+        GOMapping instance = new GOMapping();
+        instance.createMappingFile(ensFile, strOutputFile);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }*/
+
+    /**
+     * Test of createMappingFile method, of class GOMapping.
+     */
+    @Test
+    public void testCreateMappingFile_3args() {
+        System.out.println("createMappingFile");
+        String biomartFile = "";
+        String strOutputFile = "";
+        boolean bNested = false;
+        GOMapping instance = new GOMapping();
+        instance.init("D:\\workspace\\GOParser\\GO_Database\\GO_Database_20130720\\goslim_generic.obo");
+        instance.createMappingFile("D:\\workspace\\GOParser\\GO_Database\\BioMart20130911\\Arabidopsis thaliana genes (TAIR10 (2010-09-TAIR10)).txt", "D:\\workspace\\GOParser\\TestingResults\\At_generic_mapping.txt", bNested);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
     
 }

@@ -47,7 +47,7 @@ public class biomartParserTest {
         String strFile = "";
         
         biomartParser instance = new biomartParser();
-        String dir = "D:\\workspace\\GOPaser\\GO_Database\\BioMart20130911\\";
+        String dir = "D:\\workspace\\GOParser\\GO_Database\\BioMart20130911\\";
         File directory = new File(dir);
         File[] files = directory.listFiles();
         for(File file: files)
@@ -68,9 +68,7 @@ public class biomartParserTest {
                 System.out.println();
             }
         }
-        
-        
-        
+
         List expResult = null;
         
 //        assertEquals(expResult, result);

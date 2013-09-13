@@ -181,11 +181,13 @@ public class GOMapping
                 String strBP = "";
                 String strCC = "";
                 String strMF = "";
+                List<String> bpParents = new ArrayList<String>();
+                List<String> ccParents = new ArrayList<String>();
+                List<String> mfParents = new ArrayList<String>();
                 for (String strGOID: item.GOList)
                 {
                     if(!map.containsKey(strGOID))
                         continue;
-                    
                     int index = map.get(strGOID);
                     GOTerm term = terms.get(index); 
                     
@@ -194,21 +196,40 @@ public class GOMapping
                     {
                         List<String> parents = getAllParents(index);
                         for(String str: parents)
-                           parentsID += "," + str;
+                        {
+                            if (term.GOType.equals("biological_process"))
+                                bpParents.addAll(parents);
+                            if (term.GOType.equals("cellular_component"))
+                                ccParents.addAll(parents);
+                            if (term.GOType.equals("molecular_function"))
+                                mfParents.addAll(parents);
+                        }
                     }
                     if (term.GOType.equals("biological_process"))
-                        strBP += "," + strGOID + parentsID;
+                        strBP += strGOID;
                     if (term.GOType.equals("cellular_component"))
-                        strCC += "," + strGOID + parentsID;
+                        strCC += strGOID;
                     if (term.GOType.equals("molecular_function"))
-                        strMF += "," + strGOID + parentsID;
+                        strMF += strGOID;
                 }
-                if(!strBP.isEmpty() && strBP.charAt(0)==',')
-                    strBP = strBP.substring(1, strBP.length());
-                if(!strCC.isEmpty() && strCC.charAt(0)==',')
-                    strCC = strCC.substring(1, strCC.length());
-                if(!strMF.isEmpty() && strMF.charAt(0)==',')
-                    strMF = strMF.substring(1, strMF.length());
+                
+                removeDuplicate(bpParents);
+                removeDuplicate(ccParents);
+                removeDuplicate(mfParents);
+                
+                for(String str: bpParents)
+                    strBP += "," + str;
+                for(String str: ccParents)
+                    strCC += "," + str;
+                for(String str: mfParents)
+                    strMF += "," + str;
+                
+//                if(!strBP.isEmpty() && strBP.charAt(0)==',')
+//                    strBP = strBP.substring(1, strBP.length());
+//                if(!strCC.isEmpty() && strCC.charAt(0)==',')
+//                    strCC = strCC.substring(1, strCC.length());
+//                if(!strMF.isEmpty() && strMF.charAt(0)==',')
+//                    strMF = strMF.substring(1, strMF.length());
                 strLine += strBP + "\t" + strCC + "\t" + strMF + "\n";
                 fw.write(strLine);
             }
@@ -304,9 +325,17 @@ public class GOMapping
             }
             items.poll();
         }
+        removeDuplicate(parents);
         return parents;
     }
     
+    private void removeDuplicate(List<String> list) 
+    {
+      HashSet h = new HashSet(list);
+      list.clear();
+      list.addAll(h);
+      //System.out.println(list);
+    }
     private List<GOTerm> terms;
     private HashMap<String, Integer> map; 
 }

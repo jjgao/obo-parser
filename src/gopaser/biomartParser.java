@@ -16,49 +16,19 @@ public class biomartParser {
         
     public List<ENS2GO> parser(String strFile)
     {
-        List<ENS2GO> result = new ArrayList<ENS2GO>();
-        List<String> ensList = new ArrayList<String>();
-        List<String> lst = readFile(strFile);
-
-        for(Iterator it = lst.iterator(); it.hasNext();)
-        {
-            String item = it.next().toString();
-            String[] content = item.split(",");
-            if(content.length<2)
-            {
-                it.remove();
-                continue;
-            }
-            
-//            int index = findMapperIndex(result, content[0]);
-            int index = ensList.indexOf(content[0]);
-            if(index<0)
-            {
-                ENS2GO mapper = new ENS2GO();
-                mapper.strEnsemblID = content[0];
-                mapper.GOList.add(content[1]);
-                result.add(mapper);
-                ensList.add(mapper.strEnsemblID);
-            }
-            else
-            {
-                result.get(index).GOList.add(content[1]);
-            }
-            it.remove();
-        }
-        
+        List<ENS2GO> result = readFile(strFile);
         return result;
     }
     
-    private List<String> readFile(String strEnsFile)
+    private List<ENS2GO> readFile(String strFile)
     {
         FileReader fr;
         BufferedReader br;
-        List<String> result = new ArrayList<String>();
+        List<ENS2GO> result = new ArrayList<ENS2GO>();
         
         try
         {
-            fr = new FileReader(strEnsFile);
+            fr = new FileReader(strFile);
             br = new BufferedReader(fr);
 
             boolean bReady = false;
@@ -77,12 +47,28 @@ public class biomartParser {
             }
             
             // Read each line
+            String strLast = "";
+            ENS2GO tmpE2G = new ENS2GO();
             while(br.ready())
             {
                 strLine = br.readLine();
                 if (strLine.isEmpty())
-                    continue;                
-                result.add(strLine);
+                    continue;   
+                String[] content = strLine.split(",");
+                if(content.length<2)
+                    continue;
+                if(content[0].equals(tmpE2G.strEnsemblID))
+                    tmpE2G.GOList.add(content[1]);
+                else
+                {
+                    ENS2GO newE2G = new ENS2GO();
+                    newE2G.clone(tmpE2G);
+                    result.add(newE2G);
+                    tmpE2G.clear();
+                    tmpE2G.strEnsemblID = content[0];
+                    tmpE2G.GOList.add(content[1]);
+                }
+                    
             } 
 
             br.close();
@@ -95,36 +81,7 @@ public class biomartParser {
             System.out.println(ex.toString());
         }
 
+        result.remove(0);
         return result;
     }
-       
-    private int findMapperIndex(List<ENS2GO> mapperList, String strEnsemblID)
-    {
-        int result = -1;
-        for (int i=0; i<mapperList.size(); i++)
-        {
-            ENS2GO item = mapperList.get(i);
-            if (item.strEnsemblID.equals(strEnsemblID))
-            {
-                result = i;
-                return result;
-            }
-        }
-        return result;
-    }
-    
-    private int getGeneNumber(List<String> lst)
-    {
-        int iNum = 0;
-        Set set = new HashSet();
-        for (Iterator iter = lst.iterator(); iter.hasNext();)
-        {
-            String str = iter.next().toString();
-            if(set.add(str))
-                iNum++;
-        }
-        return iNum;
-    }
-    
-    private HashMap<String, Integer> map;
 }

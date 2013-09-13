@@ -118,6 +118,8 @@ public class GOMapping
             fw.write(strLine);
             for (ens2goMapper item: mapper)
             {
+                if(item.GOList.isEmpty())
+                    continue;
                 strLine = item.strEnsemblID + "\t";
                 String strBP = "";
                 String strCC = "";
@@ -177,13 +179,15 @@ public class GOMapping
             fw.write(strLine);
             for (ENS2GO item: mapper)
             {
+                if(item.GOList.isEmpty())
+                    continue;
                 strLine = item.strEnsemblID + "\t";
                 String strBP = "";
                 String strCC = "";
                 String strMF = "";
-                List<String> bpParents = new ArrayList<String>();
-                List<String> ccParents = new ArrayList<String>();
-                List<String> mfParents = new ArrayList<String>();
+                List<String> listBP = new ArrayList<String>();
+                List<String> listCC = new ArrayList<String>();
+                List<String> listMF = new ArrayList<String>();
                 for (String strGOID: item.GOList)
                 {
                     if(!map.containsKey(strGOID))
@@ -191,45 +195,47 @@ public class GOMapping
                     int index = map.get(strGOID);
                     GOTerm term = terms.get(index); 
                     
-                    String parentsID = "";
+                    if (term.GOType.equals("biological_process"))
+                        listBP.add(strGOID);
+                    if (term.GOType.equals("cellular_component"))
+                        listCC.add(strGOID);
+                    if (term.GOType.equals("molecular_function"))
+                        listMF.add(strGOID);
+                    
                     if(bNested)
                     {
                         List<String> parents = getAllParents(index);
                         for(String str: parents)
                         {
                             if (term.GOType.equals("biological_process"))
-                                bpParents.addAll(parents);
+                                listBP.addAll(parents);
                             if (term.GOType.equals("cellular_component"))
-                                ccParents.addAll(parents);
+                                listCC.addAll(parents);
                             if (term.GOType.equals("molecular_function"))
-                                mfParents.addAll(parents);
+                                listMF.addAll(parents);
                         }
                     }
-                    if (term.GOType.equals("biological_process"))
-                        strBP += strGOID;
-                    if (term.GOType.equals("cellular_component"))
-                        strCC += strGOID;
-                    if (term.GOType.equals("molecular_function"))
-                        strMF += strGOID;
+                    
                 }
                 
-                removeDuplicate(bpParents);
-                removeDuplicate(ccParents);
-                removeDuplicate(mfParents);
+                removeDuplicate(listBP);
+                removeDuplicate(listCC);
+                removeDuplicate(listMF);
                 
-                for(String str: bpParents)
+                for(String str: listBP)
                     strBP += "," + str;
-                for(String str: ccParents)
+                for(String str: listCC)
                     strCC += "," + str;
-                for(String str: mfParents)
+                for(String str: listMF)
                     strMF += "," + str;
                 
-//                if(!strBP.isEmpty() && strBP.charAt(0)==',')
-//                    strBP = strBP.substring(1, strBP.length());
-//                if(!strCC.isEmpty() && strCC.charAt(0)==',')
-//                    strCC = strCC.substring(1, strCC.length());
-//                if(!strMF.isEmpty() && strMF.charAt(0)==',')
-//                    strMF = strMF.substring(1, strMF.length());
+                if(!strBP.isEmpty())
+                    strBP = strBP.substring(1);
+                if(!strCC.isEmpty())
+                    strCC = strCC.substring(1);
+                if(!strMF.isEmpty())
+                    strMF = strMF.substring(1);
+
                 strLine += strBP + "\t" + strCC + "\t" + strMF + "\n";
                 fw.write(strLine);
             }
@@ -243,66 +249,67 @@ public class GOMapping
         }
     }
     
-    public void test(String strOBOFile)
-    {
-        oboParser parser = new oboParser();
-        List<GOTerm> terms = parser.parser(strOBOFile);
-
-        for(GOTerm term: terms)
-        {
-            if(term.GOID.equals("GO:0046467"))
-            {
-                System.out.println();
-            }
-        }
-        
-        int iNum = 0;
-        System.out.println("Testing of GO file" + "\t" + strOBOFile);
-        System.out.println("TOTLE NUMBER: " + Integer.toString(terms.size()));
-        System.out.println("--------------------------------------------------------------------------------------");
-        
-        //How many isolate terms
-        System.out.println("The following terms are isolate:");
-        System.out.println("GOID" + "\t" + "Children Number" + "\t" + "Parents Number");
-        for(GOTerm term: terms)
-        {
-            if (term.children.size()==0 && term.parents.size()==0)
-            {
-                iNum++;
-                //System.out.println(term.GOID + "\t" + Integer.toString(term.children.size()) + "\t" + Integer.toString(term.parents.size()));
-            }
-        }
-        System.out.println("TOTLE NUMBER: " + Integer.toString(iNum));
-        System.out.println("--------------------------------------------------------------------------------------");
-                
-        iNum = 0;
-        System.out.println("The following terms have no parent but have children:");
-        System.out.println("GOID" + "\t" + "Children Number" + "\t" + "Parents Number");
-        for(GOTerm term: terms)
-        {
-            if (term.children.size()>0 && term.parents.size()==0)
-            {
-                iNum++;
-                //System.out.println(term.GOID + "\t" + Integer.toString(term.children.size()) + "\t" + Integer.toString(term.parents.size()));
-            }
-        }
-        System.out.println("TOTLE NUMBER: " + Integer.toString(iNum));
-        System.out.println("--------------------------------------------------------------------------------------");
-        
-        iNum = 0;
-        System.out.println("The following terms are leavies:");
-        System.out.println("GOID" + "\t" + "Children Number" + "\t" + "Parents Number");
-        for(GOTerm term: terms)
-        {
-            if (term.children.size()==0 && term.parents.size()>0)
-            {
-                iNum++;
-                //System.out.println(term.GOID + "\t" + Integer.toString(term.children.size()) + "\t" + Integer.toString(term.parents.size()));
-            }
-        }
-        System.out.println("TOTLE NUMBER: " + Integer.toString(iNum));
-        System.out.println("--------------------------------------------------------------------------------------");
-    }
+//    public void test(String strOBOFile)
+//    {
+//        oboParser parser = new oboParser();
+//        List<GOTerm> terms = parser.parser(strOBOFile);
+//
+//        for(GOTerm term: terms)
+//        {
+//            if(term.GOID.equals("GO:0046467"))
+//            {
+//                System.out.println();
+//            }
+//        }
+//        
+//        int iNum = 0;
+//        System.out.println("Testing of GO file" + "\t" + strOBOFile);
+//        System.out.println("TOTLE NUMBER: " + Integer.toString(terms.size()));
+//        System.out.println("--------------------------------------------------------------------------------------");
+//        
+//        //How many isolate terms
+//        System.out.println("The following terms are isolate:");
+//        System.out.println("GOID" + "\t" + "Children Number" + "\t" + "Parents Number");
+//        for(GOTerm term: terms)
+//        {
+//            if (term.children.size()==0 && term.parents.size()==0)
+//            {
+//                iNum++;
+//                //System.out.println(term.GOID + "\t" + Integer.toString(term.children.size()) + "\t" + Integer.toString(term.parents.size()));
+//            }
+//        }
+//        System.out.println("TOTLE NUMBER: " + Integer.toString(iNum));
+//        System.out.println("--------------------------------------------------------------------------------------");
+//                
+//        iNum = 0;
+//        System.out.println("The following terms have no parent but have children:");
+//        System.out.println("GOID" + "\t" + "Children Number" + "\t" + "Parents Number");
+//        for(GOTerm term: terms)
+//        {
+//            if (term.children.size()>0 && term.parents.size()==0)
+//            {
+//                iNum++;
+//                //System.out.println(term.GOID + "\t" + Integer.toString(term.children.size()) + "\t" + Integer.toString(term.parents.size()));
+//            }
+//        }
+//        System.out.println("TOTLE NUMBER: " + Integer.toString(iNum));
+//        System.out.println("--------------------------------------------------------------------------------------");
+//        
+//        iNum = 0;
+//        System.out.println("The following terms are leavies:");
+//        System.out.println("GOID" + "\t" + "Children Number" + "\t" + "Parents Number");
+//        for(GOTerm term: terms)
+//        {
+//            if (term.children.size()==0 && term.parents.size()>0)
+//            {
+//                iNum++;
+//                //System.out.println(term.GOID + "\t" + Integer.toString(term.children.size()) + "\t" + Integer.toString(term.parents.size()));
+//            }
+//        }
+//        System.out.println("TOTLE NUMBER: " + Integer.toString(iNum));
+//        System.out.println("--------------------------------------------------------------------------------------");
+//    }
+//    
 
     private List<String> getAllParents(int index)
     {
@@ -317,7 +324,7 @@ public class GOMapping
         {
             int item = items.peek();
             GOTerm thisTerm = terms.get(item);  
-            parents.add(thisTerm.GOName);
+            parents.add(thisTerm.GOID);
             if(!thisTerm.parents.isEmpty())
             {
                 for(int parent: thisTerm.parents)    

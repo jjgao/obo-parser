@@ -158,10 +158,12 @@ public class GOMappingTest {
         System.out.println("createMappingFile");
         String biomartFile = "";
         String strOutputFile = "";
-        boolean bNested = false;
+        boolean bNested = true;
         GOMapping instance = new GOMapping();
-        instance.init("D:\\workspace\\GOParser\\GO_Database\\GO_Database_20130720\\goslim_generic.obo");
-        instance.createMappingFile("D:\\workspace\\GOParser\\GO_Database\\BioMart20130911\\Arabidopsis thaliana genes (TAIR10 (2010-09-TAIR10)).txt", "D:\\workspace\\GOParser\\TestingResults\\At_generic_mapping.txt", bNested);
+//        instance.init("D:\\workspace\\GOParser\\GO_Database\\GO_Database_20130720\\goslim_generic.obo");
+//        instance.createMappingFile("D:\\workspace\\GOParser\\GO_Database\\BioMart20130911\\Arabidopsis thaliana genes (TAIR10 (2010-09-TAIR10)).txt", "D:\\workspace\\GOParser\\TestingResults\\At_generic_nested_mapping.txt", bNested);
+        
+        
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
